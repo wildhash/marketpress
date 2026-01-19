@@ -2,9 +2,11 @@
 
 ## Judge Mode (5 minutes)
 
-### Option A: Public Hex Project (Recommended)
-**Coming Soon**: Open the public Hex project and click "Run All" to see the live front page.
-- Public link: [Placeholder - will be added after deployment]
+### Option A: Public Hex Project (Recommended) ⭐
+Open the public Hex project and click "Run All" to see the live front page.
+- **Public Project**: [MarketPress - Prediction Markets Newspaper](https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest)
+- Simply click **"Run All"** and explore the interactive newspaper layout
+- Try the AI Editor Desk prompts in Threads
 
 ### Option B: Build from Source (5-10 minutes)
 Follow the step-by-step instructions below to create your own Hex project.

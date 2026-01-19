@@ -4,16 +4,25 @@ A Hex-native "prediction markets newspaper" that feels like BBC/Yahoo. MarketPre
 
 ---
 
+## Visual Preview
+
+> 📸 **Screenshots Coming Soon**: Screenshots will be added after public Hex deployment showing the newspaper-style front page, drill-down views, and Editor Desk in action.
+>
+> For now, see the live demo at the public Hex link below.
+
+---
+
 ## Judge Mode (5 Minutes)
 
 **Want to see it in action?** Two options:
 
-### Option A: Open Public Hex Project
-1. Open the public Hex project: [Coming Soon - Link will be added]
+### Option A: Open Public Hex Project (Recommended) ⭐
+1. Open the public Hex project: **[MarketPress - Prediction Markets Newspaper](https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest)**
 2. Click **"Run All"**
-3. Explore the interactive front page
+3. Explore the interactive front page with live prediction market data
+4. Try the AI Editor Desk in Threads
 
-### Option B: Create Your Own
+### Option B: Build from Source
 1. Follow the [HEX_GUIDE.md](HEX_GUIDE.md) step-by-step instructions
 2. Paste 8 cells from `hex_cells/` folder
 3. Click **"Run All"**
@@ -166,12 +175,16 @@ Quick summary:
 
 The AI Editor Desk is powered by Hex Threads with a semantic model (`semantic_model.yaml`).
 
-**Starter Prompts:**
-- "Write today's front page in 8 headlines"
-- "What's the biggest belief shift since yesterday?"
-- "Show me the fun desk: weird movers with real liquidity"
-- "Which categories are most unstable right now?"
-- "Summarize the political markets"
+#### 2-Minute Threads Demo
+
+Once your Hex project is running, open the Threads panel and try these starter prompts:
+
+1. **"Write today's front page in 8 headlines"** - Get a concise executive summary of top markets
+2. **"What's the biggest belief shift since yesterday?"** - Find markets with the largest 24h probability changes
+3. **"Show me the fun desk: weird movers with real liquidity"** - Discover unusual markets with actual trading activity
+4. **"Which categories are most unstable right now?"** - Identify which sections (Politics/Business/Tech/etc.) have highest volatility
+
+These prompts work reliably because they align with the computed signals and section organization in the data model.
 
 **Available Functions:**
 ```python
@@ -359,13 +372,18 @@ print(developing[['title', 'volatility', 'attention_score']])
 
 ## Hex Deployment Guide
 
+**Recommended Method**: Use the `hex_cells/` folder approach documented in [HEX_GUIDE.md](HEX_GUIDE.md).
+
+Quick summary:
 1. **Create Hex Project**: New Python notebook
-2. **Upload Files**: All `.py` files from repo
-3. **Setup Cell**: Copy Cell 1 from `hex_app.py`
-4. **Layout Cells**: Copy remaining cells for each section
-5. **Grid Layout**: Arrange in newspaper-style columns
-6. **Schedule**: Set auto-refresh (e.g., every 15 minutes)
-7. **Publish**: Share with team or make public
+2. **Create 8 Python Cells**: Paste code from `hex_cells/01_setup.py` through `hex_cells/08_editor.py`
+3. **Run All**: Click "Run All" to execute all cells
+4. **Grid Layout**: Arrange outputs in newspaper-style columns
+5. **Schedule**: Set auto-refresh (e.g., every 15 minutes)
+6. **Publish**: Share with team or make public
+
+### Legacy Method (Not Recommended)
+The `hex_app.py` file provides a legacy template approach. Use the `hex_cells/` method above for judging and production use.
 
 ### Recommended Hex Layout
 ```
@@ -397,6 +415,44 @@ print(developing[['title', 'volatility', 'attention_score']])
 - Rate limited to avoid overloading the API
 - Historical data accumulated during runtime only
 - Sparklines require multiple snapshots over time
+
+## Troubleshooting
+
+### API Connection Issues
+**Problem**: Kalshi API is unavailable, rate-limited, or returns errors.
+
+**Solution**: The application includes automatic demo fallback. When the API fails, it will:
+1. Automatically load cached sample market data from `demo_data/`
+2. Display a banner: `"Demo mode: using cached sample markets (Kalshi unavailable)"`
+3. Continue functioning normally with realistic sample data
+
+To manually enable demo mode, set `USE_DEMO_DATA = True` in `hex_cells/01_setup.py`.
+
+### Missing Data or Empty Sections
+**Problem**: Some sections show no markets or missing data.
+
+**Solution**: 
+- Ensure all cells run in order (1-8)
+- Check for error messages in cell outputs
+- Try reducing `MARKET_LIMIT` in Cell 1 (default is 100)
+- Verify demo mode is working if API is unavailable
+
+### Slow Performance
+**Problem**: Data fetching or signal computation takes too long.
+
+**Solution**:
+- Reduce `MARKET_LIMIT` in Cell 1 (try 50 markets)
+- Increase refresh interval in Hex schedule
+- Use demo data for testing layouts before going live
+
+### Threads Prompts Not Working
+**Problem**: Editor Desk queries return unexpected results.
+
+**Solution**:
+- Verify `semantic_model.yaml` is properly loaded
+- Ensure all data tables (`markets_df`, `snapshots_df`, `liquidity_df`) are populated
+- Check that column names match the semantic model definitions
+- Try the starter prompts listed in the Threads demo section
 
 ## Roadmap
 

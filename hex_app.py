@@ -1,8 +1,14 @@
 """
-MarketPress Hex Application Template
-Copy this code into Hex cells to create the MarketPress front page
+MarketPress Hex Application Template - LEGACY (Not Recommended for Judging)
 
-This template provides a complete newspaper-style layout with:
+⚠️ LEGACY FILE - DO NOT USE FOR JUDGING ⚠️
+This file is kept for backward compatibility only.
+
+For judging and production use, please use the hex_cells/ folder approach:
+- See HEX_GUIDE.md for instructions
+- Use hex_cells/01_setup.py through hex_cells/08_editor.py
+
+This legacy template provides a complete newspaper-style layout with:
 - Top Stories section
 - Category sections (Politics, Business, Tech, Culture, Sports)
 - Developing stories
