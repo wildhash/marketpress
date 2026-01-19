@@ -128,7 +128,7 @@ class MarketPressEditor:
                 
                 prob_str = f"{prob * 100:.0f}%" if prob else "N/A"
                 
-                if delta and pd.notna(delta):
+                if delta and not pd.isna(delta):
                     sign = "up" if delta > 0 else "down"
                     delta_str = f"{abs(delta) * 100:.0f}%"
                     summary_parts.append(f"  • {title}: {prob_str} ({sign} {delta_str})")

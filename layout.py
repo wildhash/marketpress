@@ -115,9 +115,15 @@ def identify_developing_stories(df: pd.DataFrame,
     
     # Sort by recency of change (highest attention and volatility first)
     if 'attention_score' in developing.columns and 'volatility' in developing.columns:
+        max_volatility = developing['volatility'].max()
+        volatility_normalized = (
+            developing['volatility'].fillna(0) / max_volatility 
+            if max_volatility > 0 
+            else 0
+        )
         developing['developing_score'] = (
-            0.5 * developing['attention_score'].fillna(0) +
-            0.5 * developing['volatility'].fillna(0) / developing['volatility'].max() if developing['volatility'].max() > 0 else 0
+            0.5 * developing['attention_score'].fillna(0) + 
+            0.5 * volatility_normalized
         )
         developing = developing.sort_values('developing_score', ascending=False)
     
