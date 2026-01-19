@@ -1,8 +1,69 @@
 # MarketPress 📰
 
-A BBC/Yahoo-style newspaper front page for prediction markets. MarketPress transforms live Kalshi market data into a clean, organized news layout with AI-powered insights.
+A Hex-native "prediction markets newspaper" that feels like BBC/Yahoo. MarketPress transforms live Kalshi market data into a scannable front page with raw-fact headlines, interactive filters, and an AI "Editor Desk" powered by Hex Threads.
+
+---
+
+## Judge Mode (5 Minutes)
+
+**Want to see it in action?** Two options:
+
+### Option A: Open Public Hex Project
+1. Open the public Hex project: [Coming Soon - Link will be added]
+2. Click **"Run All"**
+3. Explore the interactive front page
+
+### Option B: Create Your Own
+1. Follow the [HEX_GUIDE.md](HEX_GUIDE.md) step-by-step instructions
+2. Paste 8 cells from `hex_cells/` folder
+3. Click **"Run All"**
+4. Total time: 5-10 minutes
+
+---
+
+## What You Get
+
+A judge-proof, BBC-style prediction markets front page with:
+
+- **Lead Story** - The most newsworthy market right now
+- **Top Stories** - Highest-ranked markets across all categories
+- **Section Pages** - Politics, Business, Tech, Culture, Sports
+- **Developing** - High-volatility markets with accelerating attention
+- **Most Read** - Highest-attention markets (volume/OI proxy)
+
+Each headline includes:
+- Implied probability
+- Δ24h / Δ7d movement
+- Volume / attention proxy
+- Spread / confidence proxy
+- Last updated timestamp
+
+Plus:
+- **Filters** - Category, time window, min liquidity
+- **Drill-down** - Click headline → timeline + fact box
+- **AI Editor Desk** - Hex Threads integration for natural language queries
+
+---
+
+## Philosophy: Raw Facts, No Spin
+
+MarketPress presents **what the crowd believes**, not what pundits think. Every headline is a prediction market with:
+- Real money on the line
+- Transparent probability
+- Trackable changes over time
+
+No commentary. No hot takes. Just the wisdom (or madness) of crowds.
+
+---
 
 ## Features
+
+### 📰 Newspaper-Style Layout
+- **Lead Story** - Single most newsworthy market
+- **Top Stories** - Top 5 across all categories  
+- **Category Sections** - Politics, Business, Tech, Culture, Sports
+- **Developing** - High volatility + accelerating attention
+- **Most Read** - Highest attention scores
 
 ### 🔄 Live Data Ingestion
 - Fetches real-time market data from Kalshi's public API
@@ -83,59 +144,147 @@ politics_df = app.get_section_dataframe('Politics')
 print(politics_df.head())
 ```
 
-### In Hex
+### In Hex (Recommended)
 
+**The Hex-first approach:** See [HEX_GUIDE.md](HEX_GUIDE.md) for complete instructions.
+
+Quick summary:
 1. Create a new Hex notebook
-2. Upload all `.py` files from this repository
-3. Copy the code from `hex_app.py` into separate Hex cells
-4. Run cells to create the front page layout
-5. Arrange cells in Hex's grid layout for newspaper-style presentation
+2. Create 8 Python cells, paste code from `hex_cells/` folder in order:
+   - `01_setup.py` - Config and constants
+   - `02_fetch_kalshi.py` - Data fetching  
+   - `03_normalize.py` - Table normalization
+   - `04_signals.py` - Signal computation
+   - `05_sections.py` - Section organization
+   - `06_frontpage.py` - Front page layout
+   - `07_drilldown.py` - Drill-down details
+   - `08_editor.py` - Editor Desk functions
+3. Run All
+4. Arrange in grid layout
 
-### Hex Thread Integration
+### Hex Threads Integration (Editor Desk)
 
-The AI Editor is designed to work with Hex Thread:
+The AI Editor Desk is powered by Hex Threads with a semantic model (`semantic_model.yaml`).
 
+**Starter Prompts:**
+- "Write today's front page in 8 headlines"
+- "What's the biggest belief shift since yesterday?"
+- "Show me the fun desk: weird movers with real liquidity"
+- "Which categories are most unstable right now?"
+- "Summarize the political markets"
+
+**Available Functions:**
 ```python
-# The semantic model is automatically built
-semantic_model = app.editor.semantic_model
-
-# Use in Hex Thread for natural language queries
-# Thread can understand: market counts, trends, movers, attention, etc.
+summarize_front_page()      # Executive summary
+biggest_belief_shifts()     # Top movers
+most_unstable_markets()     # High volatility
+fun_desk()                  # Weird movers with liquidity
+serious_desk()              # High-stakes markets
+answer_query(question)      # Natural language Q&A
 ```
+
+## What's Working Today
+
+✅ **Core Features (Production Ready)**
+- Kalshi public API ingestion with pagination
+- Three normalized tables (markets, snapshots, liquidity)
+- Signal computation (Δ24h, Δ7d, volatility, attention, confidence, newsworthiness)
+- Newspaper-style section organization
+- Front page layout with Lead Story, Top Stories, and 5 category sections
+- Developing stories (high volatility detection)
+- Most Read proxy (attention scoring)
+- Drill-down fact boxes with full market details
+- AI Editor Desk with Hex Threads integration
+- Semantic model for natural language queries
+- Demo mode for testing without API
+- Hex-first packaging (8 cells, paste and run)
+
+✅ **Hex Integration**
+- Cell-by-cell code organization (`hex_cells/` folder)
+- Complete deployment guide
+- Thread-ready semantic model
+- Interactive filters and displays
+
+## What's Next
+
+🚧 **Planned Enhancements**
+- **Multi-source enrichment**: News headlines, Twitter sentiment, Google Trends correlation
+- **Alerting system**: Email/Slack notifications for significant market moves
+- **Premium x402 paywall integration**: Monetization layer for advanced features
+- **Persistent historical storage**: Database backend for long-term trend analysis
+- **Advanced volatility models**: GARCH, realized volatility, implied volatility
+- **Multi-exchange support**: Polymarket, PredictIt, Manifold Markets
+- **User-customizable sections**: Create your own market categories
+- **Real-time WebSocket updates**: Live price ticking without refresh
+- **Mobile-optimized layout**: Responsive design for phones/tablets
+
+---
 
 ## Architecture
 
+### Hex-First Design
+
+MarketPress is designed for **Hex Projects**, not traditional applications. The architecture reflects this:
+
 ```
-MarketPress
-├── kalshi_api.py          # Kalshi API client
-├── data_normalization.py  # Data table schemas
-├── signals.py             # Signal computation
-├── visualization.py       # Sparklines and formatting
-├── layout.py              # Section organization
-├── editor.py              # AI Editor with semantic model
-├── marketpress.py         # Main application
-└── hex_app.py            # Hex notebook template
+User Opens Hex Project → Runs 8 Cells → Interactive Front Page
 ```
 
-## Data Flow
+### Cell Flow
+
+```
+Cell 1: Setup          → Configuration, constants, category mappings
+Cell 2: Fetch          → Kalshi API or demo data  
+Cell 3: Normalize      → Markets, snapshots, liquidity tables
+Cell 4: Signals        → Δ24h, Δ7d, volatility, attention, confidence, newsworthiness
+Cell 5: Sections       → Organize into Lead, Top, Politics, Business, Tech, Culture, Sports, Developing, Most Read
+Cell 6: Front Page     → Display-ready dataframes with formatting
+Cell 7: Drill-Down     → Fact boxes and timeline data
+Cell 8: Editor Desk    → Threads functions for Q&A
+```
+
+### Data Flow
 
 ```
 Kalshi API → Raw Markets → Normalized Tables → Signal Computation
                                 ↓
                          Section Organization
                                 ↓
-                    ┌──────────────────────┐
-                    │   MarketPress App    │
-                    ├──────────────────────┤
-                    │ - Front Page Layout  │
-                    │ - Section Tables     │
-                    │ - AI Editor          │
-                    │ - Sparklines         │
-                    │ - Timestamps         │
-                    └──────────────────────┘
+                     ┌──────────────────────┐
+                     │   Front Page Layout  │
+                     ├──────────────────────┤
+                     │ - Lead Story         │
+                     │ - Top Stories        │
+                     │ - Category Sections  │
+                     │ - Developing         │
+                     │ - Most Read          │
+                     │ - Editor Desk        │
+                     └──────────────────────┘
+                                ↓
+                        Hex Display + Threads
 ```
 
-## API Reference
+### Traditional Python Architecture (Optional)
+
+For standalone Python usage, the codebase includes:
+```
+MarketPress
+├── hex_cells/             # Hex-first cell code (8 files)
+├── kalshi_api.py          # Kalshi API client
+├── data_normalization.py  # Data table schemas
+├── signals.py             # Signal computation
+├── visualization.py       # Sparklines and formatting
+├── layout.py              # Section organization
+├── editor.py              # AI Editor with semantic model
+├── marketpress.py         # Main application orchestrator
+├── demo_data.py           # Demo data generator
+├── hex_app.py             # Legacy Hex template
+└── semantic_model.yaml    # Threads semantic model spec
+```
+
+---
+
+## API Reference (Python)
 
 ### Main Classes
 

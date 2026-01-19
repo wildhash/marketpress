@@ -1,129 +1,108 @@
 # MarketPress Hex Deployment Guide
 
-## Quick Start
+## Judge Mode (5 minutes)
+
+### Option A: Public Hex Project (Recommended)
+**Coming Soon**: Open the public Hex project and click "Run All" to see the live front page.
+- Public link: [Placeholder - will be added after deployment]
+
+### Option B: Build from Source (5-10 minutes)
+Follow the step-by-step instructions below to create your own Hex project.
+
+---
+
+## Building from Source
 
 ### 1. Create a New Hex Project
 1. Log in to Hex (hex.tech)
 2. Click "Create Project" → "Blank Notebook"
 3. Name it "MarketPress"
 
-### 2. Upload Files
-Upload these Python files to your Hex project:
-- `kalshi_api.py`
-- `data_normalization.py`
-- `signals.py`
-- `visualization.py`
-- `layout.py`
-- `editor.py`
-- `marketpress.py`
-- `demo_data.py`
+### 2. Create Cells in Order
+**Do NOT upload files**. Instead, create Python cells and paste the contents of each file from the `hex_cells/` folder in numeric order.
 
-### 3. Create Cells
+### 3. Cell-by-Cell Instructions
 
-#### Cell 1: Setup and Initialization
-```python
-# Install dependencies (run once)
-!pip install requests pandas numpy plotly python-dateutil
+#### Cell 1: Setup and Configuration
+1. Create a new **Python cell** in Hex
+2. Paste the entire contents of `hex_cells/01_setup.py`
+3. Run the cell
+4. Expected output: "✓ MarketPress configuration loaded"
 
-# Import the MarketPress application
-from marketpress import create_marketpress_app
+#### Cell 2: Fetch Kalshi Data
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/02_fetch_kalshi.py`
+3. Run the cell
+4. Expected output: "✓ Data fetched: N markets"
 
-# Initialize the application
-# Set use_demo=True for testing, False for live Kalshi data
-app = create_marketpress_app(limit=100, use_demo=False)
+#### Cell 3: Normalize Data
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/03_normalize.py`
+3. Run the cell
+4. Expected output: "✓ Normalized N markets into tables"
 
-print("✓ MarketPress initialized")
-```
+#### Cell 4: Compute Signals
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/04_signals.py`
+3. Run the cell
+4. Expected output: "✓ Computed signals for N markets"
 
-#### Cell 2: Top Stories
-```python
-from visualization import format_probability, format_delta
+#### Cell 5: Section Organization
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/05_sections.py`
+3. Run the cell
+4. Expected output: "✓ Organized into sections" with section counts
 
-top_stories = app.get_section_dataframe('Top Stories')
+#### Cell 6: Front Page Layout
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/06_frontpage.py`
+3. Run the cell
+4. Expected output: Formatted front page with Top Stories
 
-# Format for display
-display_df = top_stories[['title', 'yes_price', 'delta_24h', 'volume']].head(10).copy()
-display_df.columns = ['Market', 'Probability', '24h Change', 'Volume']
+#### Cell 7: Drill-Down Details
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/07_drilldown.py`
+3. Run the cell
+4. Expected output: Example fact box for lead story
 
-# Format percentages
-display_df['Probability'] = display_df['Probability'].apply(format_probability)
-display_df['24h Change'] = display_df['24h Change'].apply(format_delta)
+#### Cell 8: Editor Desk (Threads)
+1. Create a new **Python cell**
+2. Paste the entire contents of `hex_cells/08_editor.py`
+3. Run the cell
+4. Expected output: Editor's summary and available functions
 
-display_df
-```
+### 4. Run All
+After creating all 8 cells, click **"Run All"** in Hex. The notebook will:
+1. Configure the application
+2. Fetch market data (or use demo data)
+3. Normalize into tables
+4. Compute signals
+5. Organize into sections
+6. Display front page
+7. Show drill-down example
+8. Initialize Editor Desk
 
-#### Cell 3: AI Editor Summary
-```python
-print(app.get_editor_summary())
-```
+### 5. Expected Outputs
+After running all cells, you should see:
+- **Cell 1**: Configuration confirmation
+- **Cell 2**: Market count
+- **Cell 3**: Normalized tables info
+- **Cell 4**: Signal computation results
+- **Cell 5**: Section organization counts
+- **Cell 6**: Front page layout with top stories
+- **Cell 7**: Fact box for lead story
+- **Cell 8**: Editor's summary and available functions
 
-#### Cell 4: Politics Section
-```python
-politics = app.get_section_dataframe('Politics')
-politics[['title', 'yes_price', 'delta_24h']].head(10)
-```
+### 6. Accessing Data
+All data is now available as DataFrame variables:
+- `markets_df` - All markets with signals
+- `snapshots_df` - Time-series data
+- `liquidity_df` - Spread and confidence metrics
+- `top_stories_display` - Top stories formatted
+- `politics_display`, `business_display`, etc. - Section tables
+- `lead_fact_box` - Lead story details
 
-#### Cell 5: Business Section
-```python
-business = app.get_section_dataframe('Business')
-business[['title', 'yes_price', 'delta_24h']].head(10)
-```
-
-#### Cell 6: Tech Section
-```python
-tech = app.get_section_dataframe('Tech')
-tech[['title', 'yes_price', 'delta_24h']].head(10)
-```
-
-#### Cell 7: Culture Section
-```python
-culture = app.get_section_dataframe('Culture')
-culture[['title', 'yes_price', 'delta_24h']].head(10)
-```
-
-#### Cell 8: Sports Section
-```python
-sports = app.get_section_dataframe('Sports')
-sports[['title', 'yes_price', 'delta_24h']].head(10)
-```
-
-#### Cell 9: Developing Stories
-```python
-developing = app.get_section_dataframe('Developing')
-developing[['title', 'yes_price', 'delta_24h', 'volatility']].head(10)
-```
-
-#### Cell 10: Interactive Q&A
-```python
-# Add a Hex text input widget named 'question'
-# Then use this code:
-answer = app.ask_editor(question)
-print(answer)
-```
-
-### 4. Layout Configuration
-
-Use Hex's grid layout to arrange cells:
-
-```
-┌──────────────┬──────────────┬──────────────┐
-│ Cell 1       │ Cell 3       │              │
-│ (Setup)      │ (AI Editor)  │              │
-├──────────────┼──────────────┤              │
-│ Cell 2       │ Cell 9       │  Cell 10     │
-│ (Top Stories)│ (Developing) │  (Q&A)       │
-├──────────────┼──────────────┤              │
-│ Cell 4       │ Cell 5       │              │
-│ (Politics)   │ (Business)   │              │
-├──────────────┼──────────────┤              │
-│ Cell 6       │ Cell 7       │              │
-│ (Tech)       │ (Culture)    │              │
-└──────────────┴──────────────┘              │
-│ Cell 8 (Sports)              │              │
-└──────────────────────────────┴──────────────┘
-```
-
-### 5. Styling Tips
+### 7. Styling Tips
 
 Add markdown cells for headers:
 ```markdown
@@ -136,116 +115,119 @@ Add markdown cells for headers:
 ## Top Stories
 ```
 
-### 6. Schedule Auto-Refresh
+### 8. Schedule Auto-Refresh
 
 1. Click "Schedule" in Hex
 2. Set refresh interval (e.g., every 15 minutes)
 3. Configure to run during market hours
 4. Enable email/Slack notifications for significant changes
 
-### 7. Advanced Features
-
-#### Add Plotly Sparklines
-```python
-import plotly.graph_objects as go
-
-def create_plotly_sparkline(ticker):
-    snapshots = app.snapshots_df[app.snapshots_df['ticker'] == ticker]
-    prices = snapshots['yes_price'].tolist()
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(y=prices, mode='lines', line=dict(color='blue', width=2)))
-    fig.update_layout(
-        height=50,
-        margin=dict(l=0, r=0, t=0, b=0),
-        xaxis=dict(visible=False),
-        yaxis=dict(visible=False),
-        showlegend=False
-    )
-    return fig
-
-# Use in a cell
-create_plotly_sparkline('DEMO-001')
-```
+### 9. Advanced Features
 
 #### Add Filters with Hex Inputs
+Create additional cells for filtering:
 ```python
-# Create a dropdown input named 'category_filter'
-filtered_df = app.markets_df[app.markets_df['category'] == category_filter]
-filtered_df[['title', 'yes_price', 'delta_24h']]
+# Cell: Filter by Category
+# Create a dropdown input widget named 'selected_category'
+filtered_df = markets_df[markets_df['section'] == selected_category]
+section_to_display_df(filtered_df)
 ```
 
-#### Add Threshold Alerts
+#### Display Individual Sections
+Create separate cells for each section:
 ```python
-# Alert on big movers
-big_movers = app.markets_df[abs(app.markets_df['delta_24h']) > 0.10]
-if not big_movers.empty:
-    print(f"⚠️ {len(big_movers)} markets moved >10% in 24h!")
-    print(big_movers[['title', 'yes_price', 'delta_24h']])
+# Cell: Politics Section
+politics_display[['title', 'probability', 'delta_24h', 'attention']]
 ```
 
-### 8. Hex Thread Integration
-
-For Hex Thread, expose the semantic model:
-
 ```python
-# Make data available to Thread
-semantic_model = {
-    'markets': app.markets_df.to_dict('records'),
-    'sections': {name: df.to_dict('records') for name, df in app.sections.items()},
-    'summary': app.editor.semantic_model
-}
-
-# Thread can now answer questions like:
-# - "What are the biggest movers today?"
-# - "Show me all tech markets above 70%"
-# - "What's the average probability in politics?"
+# Cell: Business Section
+business_display[['title', 'probability', 'delta_24h', 'attention']]
 ```
 
-### 9. Publishing
+### 10. Hex Thread Integration
+
+Hex Threads can interact with your data using the Editor Desk functions. Try these prompts:
+
+**Starter Prompts for Hex Threads:**
+1. "Write today's front page in 8 headlines"
+2. "What's the biggest belief shift since yesterday?"
+3. "Show me the fun desk: weird movers with real liquidity"
+4. "Which categories are most unstable right now?"
+5. "Summarize the political markets"
+6. "What's the most watched market today?"
+
+**Use Editor Functions:**
+```python
+# In a new cell, call Editor Desk functions:
+biggest_belief_shifts()  # Top movers
+most_unstable_markets()  # High volatility
+fun_desk()  # Weird movers
+serious_desk()  # High-stakes markets
+answer_query("How many markets are tracked?")
+```
+
+The semantic model is automatically built from the data and includes:
+- All market details
+- Sections and categories
+- Signals (attention, volatility, newsworthiness)
+- Time-series snapshots
+
+### 11. Publishing
 
 1. Click "Publish" in Hex
 2. Set permissions (private, organization, public)
 3. Share the link with your team
 4. Embed in dashboards or websites
 
-### 10. Troubleshooting
+### 12. Troubleshooting
 
 **API Connection Issues:**
-- Set `use_demo=True` in Cell 1 to test with demo data
+- Set `USE_DEMO_DATA = True` in Cell 1 to test with demo data
 - Check if Kalshi API is accessible from Hex
 - Verify no rate limiting issues
 
 **Missing Data:**
-- Ensure Cell 1 runs successfully
+- Ensure all cells run in order (1-8)
 - Check for error messages in output
-- Try reducing the `limit` parameter
+- Try reducing `MARKET_LIMIT` in Cell 1
 
 **Slow Performance:**
-- Reduce the number of markets fetched
-- Increase refresh interval
-- Cache results between runs
+- Reduce `MARKET_LIMIT` in Cell 1
+- Increase refresh interval in schedule
+- Use demo data for testing
 
-**Styling Issues:**
-- Use Hex's built-in table formatting
-- Add custom CSS if needed
-- Use markdown for headers
+**Cells Won't Run:**
+- Make sure you run cells in order (dependencies)
+- Check that all dependencies are installed
+- Restart kernel and run all cells
 
 ## Best Practices
 
-1. **Run Cell 1 first** every time you open the notebook
-2. **Set appropriate refresh intervals** (15-30 minutes recommended)
-3. **Monitor API usage** to avoid rate limits
-4. **Use filters** to focus on specific categories
-5. **Archive historical data** for long-term analysis
-6. **Test with demo data** before going live
-7. **Add error handling** for production use
+1. **Always run cells in order** (1-8) when starting fresh
+2. **Use demo data first** (`USE_DEMO_DATA = True`) to test the layout
+3. **Set appropriate refresh intervals** (15-30 minutes recommended)
+4. **Monitor API usage** to avoid rate limits
+5. **Use Hex's built-in formatting** for tables
+6. **Test Threads prompts** to get familiar with the Editor Desk
+
+## File Reference
+
+All Hex cell files are in the `hex_cells/` folder:
+- `01_setup.py` - Configuration and constants
+- `02_fetch_kalshi.py` - Data fetching
+- `03_normalize.py` - Data normalization
+- `04_signals.py` - Signal computation
+- `05_sections.py` - Section organization
+- `06_frontpage.py` - Front page layout
+- `07_drilldown.py` - Drill-down details
+- `08_editor.py` - Editor Desk functions
 
 ## Support
 
 For issues or questions:
 - Check the main README.md
-- Review example.py for usage examples
+- Review the hex_cells/ folder for cell code
 - Open an issue on GitHub
 
 ---
