@@ -5,6 +5,30 @@ Timeline + fact box for selected market
 Note: This cell requires Cell 1 (setup) to be run first for imports
 """
 
+# Helper functions for formatting
+def format_percentage(value: float) -> str:
+    """Format a decimal as percentage"""
+    if pd.isna(value):
+        return "—"
+    return f"{value * 100:.0f}%"
+
+
+def format_change(value: float) -> str:
+    """Format a change value with sign and arrow"""
+    if pd.isna(value):
+        return "—"
+    
+    arrow = "↑" if value > 0 else "↓" if value < 0 else "→"
+    return f"{arrow} {abs(value) * 100:.1f}%"
+
+
+def format_number(value: float) -> str:
+    """Format large numbers with commas"""
+    if pd.isna(value):
+        return "—"
+    return f"{int(value):,}"
+
+
 def create_fact_box_df(market_id: str) -> pd.DataFrame:
     """
     Create a fact box dataframe for a specific market
