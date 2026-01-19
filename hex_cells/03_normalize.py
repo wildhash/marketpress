@@ -66,14 +66,22 @@ def normalize_snapshots_table(markets_df: pd.DataFrame) -> pd.DataFrame:
             # Ensure timestamp is datetime
             snapshots_df['timestamp'] = pd.to_datetime(snapshots_df['timestamp'])
             
-            # Add open_interest if not present
-            if 'open_interest' not in snapshots_df.columns:
-                # Merge with markets_df to get open_interest
-                snapshots_df = snapshots_df.merge(
-                    markets_df[['ticker', 'open_interest']], 
-                    on='ticker', 
-                    how='left'
-                )
+            # Add open_interest if not present and markets_df is available
+            if 'open_interest' not in snapshots_df.columns and not markets_df.empty:
+                try:
+                    # Merge with markets_df to get open_interest
+                    snapshots_df = snapshots_df.merge(
+                        markets_df[['ticker', 'open_interest']], 
+                        on='ticker', 
+                        how='left'
+                    )
+                except Exception as merge_error:
+                    print(f"  Warning: Could not merge open_interest: {merge_error}")
+                    # Add default column if merge fails
+                    snapshots_df['open_interest'] = 0
+            elif 'open_interest' not in snapshots_df.columns:
+                # Add default column if markets_df is empty
+                snapshots_df['open_interest'] = 0
             
             return snapshots_df
         except Exception as e:

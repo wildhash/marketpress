@@ -30,7 +30,10 @@ def format_number(value: float) -> str:
 
 def generate_dek(market: pd.Series) -> str:
     """
-    Generate a one-sentence "dek" (subheadline) for a market
+    Generate a one-sentence "dek" (subheadline/deck) for a market
+    
+    A "dek" is newspaper terminology for a brief subheadline that provides
+    additional context below the main headline.
     
     Format: "YES at XX% (+/-Y.Y pts / 24h), [volume descriptor], [spread descriptor]"
     """
