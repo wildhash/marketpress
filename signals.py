@@ -180,7 +180,10 @@ def compute_all_signals(markets_df: pd.DataFrame,
     # Volatility (if we have historical data)
     if historical_snapshots is not None and not historical_snapshots.empty:
         volatility_df = compute_volatility(historical_snapshots)
-        df = df.merge(volatility_df[['ticker', 'volatility']], on='ticker', how='left')
+        if not volatility_df.empty and 'ticker' in volatility_df.columns and 'volatility' in volatility_df.columns:
+            df = df.merge(volatility_df[['ticker', 'volatility']], on='ticker', how='left')
+        else:
+            df['volatility'] = np.nan
     else:
         df['volatility'] = np.nan
     

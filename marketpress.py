@@ -16,24 +16,36 @@ from visualization import (
 )
 from editor import MarketPressEditor
 
+try:
+    from demo_data import generate_demo_markets
+    DEMO_AVAILABLE = True
+except ImportError:
+    DEMO_AVAILABLE = False
+
 
 class MarketPress:
     """
     Main MarketPress application class
     """
     
-    def __init__(self):
-        """Initialize MarketPress application"""
+    def __init__(self, use_demo: bool = False):
+        """
+        Initialize MarketPress application
+        
+        Args:
+            use_demo: If True, use demo data instead of live API
+        """
         self.api = KalshiAPI()
         self.markets_df = pd.DataFrame()
         self.snapshots_df = pd.DataFrame()
         self.liquidity_df = pd.DataFrame()
         self.sections = {}
         self.editor = None
+        self.use_demo = use_demo
     
     def fetch_data(self, limit: int = 100) -> bool:
         """
-        Fetch fresh data from Kalshi API
+        Fetch fresh data from Kalshi API or use demo data
         
         Args:
             limit: Number of markets to fetch
@@ -41,17 +53,30 @@ class MarketPress:
         Returns:
             True if successful, False otherwise
         """
-        print("Fetching market data from Kalshi...")
-        
         try:
-            # Fetch enriched market data
-            raw_markets = fetch_enriched_markets(self.api, limit=limit)
+            if self.use_demo:
+                print("Using demo market data...")
+                if not DEMO_AVAILABLE:
+                    print("Demo data module not available")
+                    return False
+                raw_markets = generate_demo_markets(limit)
+                print(f"Generated {len(raw_markets)} demo markets")
+            else:
+                print("Fetching market data from Kalshi...")
+                # Fetch enriched market data
+                raw_markets = fetch_enriched_markets(self.api, limit=limit)
+                
+                # If no markets fetched, try demo mode
+                if not raw_markets:
+                    print("No markets fetched from API, falling back to demo data...")
+                    self.use_demo = True
+                    return self.fetch_data(limit=limit)
             
             if not raw_markets:
-                print("Warning: No markets fetched")
+                print("Warning: No markets available")
                 return False
             
-            print(f"Fetched {len(raw_markets)} markets")
+            print(f"Processing {len(raw_markets)} markets")
             
             # Normalize data into tables
             self.markets_df = normalize_markets(raw_markets)
@@ -69,6 +94,10 @@ class MarketPress:
             
         except Exception as e:
             print(f"Error fetching data: {e}")
+            if not self.use_demo:
+                print("Falling back to demo data...")
+                self.use_demo = True
+                return self.fetch_data(limit=limit)
             return False
     
     def compute_signals(self):
@@ -239,17 +268,18 @@ class MarketPress:
 
 # Convenience functions for Hex integration
 
-def create_marketpress_app(limit: int = 100) -> MarketPress:
+def create_marketpress_app(limit: int = 100, use_demo: bool = False) -> MarketPress:
     """
     Create and initialize a MarketPress application
     
     Args:
         limit: Number of markets to fetch
+        use_demo: If True, use demo data instead of live API
         
     Returns:
         Initialized MarketPress instance
     """
-    app = MarketPress()
+    app = MarketPress(use_demo=use_demo)
     app.refresh(limit=limit)
     return app
 
@@ -330,8 +360,9 @@ def ask_editor_question(app: MarketPress, question: str) -> str:
 if __name__ == "__main__":
     print("Starting MarketPress...")
     
+    # Try live API first, fall back to demo
     # Create and initialize the app
-    app = create_marketpress_app(limit=50)
+    app = create_marketpress_app(limit=50, use_demo=False)
     
     # Display front page
     print("\n" + get_front_page_text(app))
