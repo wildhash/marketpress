@@ -48,9 +48,38 @@ def normalize_snapshots_table(markets_df: pd.DataFrame) -> pd.DataFrame:
     """
     Create snapshots table for time-series data
     
+    If demo data exists in demo_data/snapshots_sample.csv, load it.
+    Otherwise create a single snapshot from current market data.
+    
     Returns:
         DataFrame with columns: ticker, timestamp, yes_price, volume, open_interest
     """
+    import os
+    
+    # Try to load from demo CSV if it exists and we're in demo mode
+    snapshots_file = 'demo_data/snapshots_sample.csv'
+    if DATA_MODE == "DEMO" and os.path.exists(snapshots_file):
+        try:
+            snapshots_df = pd.read_csv(snapshots_file)
+            print(f"  Loaded {len(snapshots_df)} snapshots from {snapshots_file}")
+            
+            # Ensure timestamp is datetime
+            snapshots_df['timestamp'] = pd.to_datetime(snapshots_df['timestamp'])
+            
+            # Add open_interest if not present
+            if 'open_interest' not in snapshots_df.columns:
+                # Merge with markets_df to get open_interest
+                snapshots_df = snapshots_df.merge(
+                    markets_df[['ticker', 'open_interest']], 
+                    on='ticker', 
+                    how='left'
+                )
+            
+            return snapshots_df
+        except Exception as e:
+            print(f"  Warning: Could not load snapshots from CSV: {e}")
+    
+    # Fallback: create single snapshot from current market data
     now = datetime.now()
     
     records = []
