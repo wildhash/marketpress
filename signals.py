@@ -4,8 +4,8 @@ Computes trading signals and metrics for market analysis
 """
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional
-from datetime import datetime, timedelta
+from typing import Optional
+from datetime import timedelta
 
 
 def compute_probability_changes(current_df: pd.DataFrame, 
@@ -152,9 +152,11 @@ def compute_confidence_metrics(df: pd.DataFrame) -> pd.DataFrame:
         return df
     
     # Tighter spread = higher confidence
-    # Normalize: spread of 0 = confidence 1.0, spread of 0.10+ = confidence 0
+    # Use exponential decay for smoother scaling
+    # Formula: confidence = exp(-spread * 15)
+    # This gives: 0% spread -> 1.0 confidence, 10% spread -> 0.22 confidence, 20% spread -> 0.05 confidence
     df['confidence_score'] = df['spread'].apply(
-        lambda x: max(0, 1.0 - (x * 10)) if pd.notna(x) else 0.5
+        lambda x: np.exp(-x * 15) if pd.notna(x) and x >= 0 else 0.5
     )
     
     return df
@@ -218,6 +220,13 @@ def rank_top_stories(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
     # - High confidence (20%)
     # - Recent volatility (10%)
     
+    # Newsworthiness score based on:
+    # - Large probability changes (40%) - recent market moves indicate news
+    # - High attention (30%) - volume and open interest show trader interest
+    # - High confidence (20%) - tight spreads indicate market certainty
+    # - Recent volatility (10%) - price instability suggests developing story
+    # These weights prioritize price changes and market activity over volatility
+    
     # Normalize delta_24h
     abs_delta = df['delta_24h'].fillna(0).abs()
     max_delta = abs_delta.max() if abs_delta.max() > 0 else 1
@@ -227,10 +236,13 @@ def rank_top_stories(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
     attention = df['attention_score'].fillna(0)
     confidence = df['confidence_score'].fillna(0.5)
     
-    # Normalize volatility
+    # Normalize volatility safely
     vol = df['volatility'].fillna(0)
-    max_vol = vol.max() if vol.max() > 0 else 1
-    vol_score = vol / max_vol
+    max_vol = vol.max()
+    if max_vol > 0:
+        vol_score = vol / max_vol
+    else:
+        vol_score = pd.Series(0, index=vol.index)
     
     df['newsworthiness'] = (
         0.4 * delta_score + 

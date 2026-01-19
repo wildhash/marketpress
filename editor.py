@@ -3,7 +3,7 @@ Hex Thread Editor Module
 Provides AI-powered summarization and query answering for the MarketPress front page
 """
 import pandas as pd
-from typing import Dict, List, Optional
+from typing import Dict
 
 
 class MarketPressEditor:

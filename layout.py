@@ -3,8 +3,8 @@ Layout and Sections Module
 Organizes markets into newspaper-style sections
 """
 import pandas as pd
-from typing import Dict, List, Tuple
-from datetime import datetime, timedelta
+from typing import Dict
+from datetime import datetime
 
 
 # Category mappings for section organization
@@ -182,7 +182,7 @@ def format_timestamp(dt: datetime = None) -> str:
     if dt is None:
         dt = datetime.now()
     
-    return dt.strftime("Updated: %b %d, %I:%M %p %Z")
+    return dt.strftime("Updated: %b %d, %I:%M %p")
 
 
 def create_section_layout(sections: Dict[str, pd.DataFrame]) -> str:

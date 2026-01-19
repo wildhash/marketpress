@@ -4,7 +4,7 @@ MarketPress Example Script
 Demonstrates all major features of the MarketPress application
 """
 
-from marketpress import create_marketpress_app, get_section_table
+from marketpress import create_marketpress_app
 import pandas as pd
 
 print("=" * 80)

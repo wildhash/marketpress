@@ -19,8 +19,7 @@ Install dependencies (run once)
 # !pip install requests pandas numpy plotly python-dateutil
 
 # Import the MarketPress application
-from marketpress import create_marketpress_app, get_front_page_text, get_section_table, get_editor_summary, ask_editor_question
-import pandas as pd
+from marketpress import create_marketpress_app
 
 # Initialize the application (fetches live Kalshi data)
 app = create_marketpress_app(limit=100)
@@ -44,24 +43,32 @@ print(front_page)
 """
 Top Stories - Most newsworthy markets across all categories
 """
-top_stories_df = get_section_table(app, 'Top Stories')
+top_stories_df = app.get_section_dataframe('Top Stories')
 
 # Display as table
 if not top_stories_df.empty:
-    display_df = top_stories_df[['title', 'probability', '24h_change', 'volume', 'attention_score']].head(10).copy()
-    display_df.columns = ['Market', 'Probability', '24h Change', 'Volume', 'Attention']
+    # Select columns that exist
+    cols_to_display = []
+    for col in ['title', 'yes_price', 'delta_24h', 'volume', 'attention_score']:
+        if col in top_stories_df.columns:
+            cols_to_display.append(col)
     
-    # Add sparklines
-    if 'ticker' in top_stories_df.columns:
-        ticker_series = top_stories_df['ticker']
-        display_df['Trend'] = display_df.index.map(
-            lambda idx: app.get_market_sparkline(ticker_series.loc[idx])
-            if idx in ticker_series.index else '─────'
-        )
+    if cols_to_display:
+        display_df = top_stories_df[cols_to_display].head(10).copy()
+        
+        # Format columns
+        col_names = {'title': 'Market', 'yes_price': 'Probability', 'delta_24h': '24h Change', 'volume': 'Volume', 'attention_score': 'Attention'}
+        display_df.columns = [col_names.get(col, col) for col in cols_to_display]
+        
+        # Add sparklines if ticker column exists
+        if 'ticker' in top_stories_df.columns:
+            display_df['Trend'] = top_stories_df.head(10)['ticker'].apply(
+                lambda ticker: app.get_market_sparkline(ticker) if ticker else '─────'
+            )
+        
+        display_df
     else:
-        display_df['Trend'] = '─────'
-    
-    display_df
+        print("No columns available to display")
 else:
     print("No top stories available")
 
@@ -152,12 +159,19 @@ else:
 """
 Developing Stories - Markets with high volatility and recent significant changes
 """
-developing_df = get_section_table(app, 'Developing')
+developing_df = app.get_section_dataframe('Developing')
 
 if not developing_df.empty:
-    display_df = developing_df[['title', 'probability', '24h_change', 'volatility', 'attention_score']].head(10).copy()
-    display_df.columns = ['Market', 'Probability', '24h Change', 'Volatility', 'Attention']
-    display_df
+    # Select available columns with fallbacks
+    cols = [col for col in ['title', 'yes_price', 'delta_24h', 'volatility', 'attention_score'] if col in developing_df.columns]
+    if cols:
+        display_df = developing_df[cols].head(10).copy()
+        # Rename columns for display
+        col_map = {'title': 'Market', 'yes_price': 'Probability', 'delta_24h': '24h Change', 'volatility': 'Volatility', 'attention_score': 'Attention'}
+        display_df.columns = [col_map.get(col, col) for col in cols]
+        display_df
+    else:
+        print("No columns available")
 else:
     print("No developing stories at this time")
 

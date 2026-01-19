@@ -4,7 +4,7 @@ Fetches live public market data from Kalshi's API
 """
 import requests
 from typing import Dict, List, Optional
-from datetime import datetime, timedelta
+
 import time
 
 
@@ -40,8 +40,11 @@ class KalshiAPI:
             response.raise_for_status()
             data = response.json()
             return data.get('markets', [])
-        except Exception as e:
+        except requests.RequestException as e:
             print(f"Error fetching markets: {e}")
+            return []
+        except (ValueError, KeyError) as e:
+            print(f"Error parsing market data: {e}")
             return []
     
     def get_market(self, ticker: str) -> Optional[Dict]:
@@ -152,21 +155,39 @@ class KalshiAPI:
             return []
 
 
-def fetch_enriched_markets(api: KalshiAPI, limit: int = 100) -> List[Dict]:
+def fetch_enriched_markets(api: KalshiAPI, limit: int = 100, enrich_data: bool = True) -> List[Dict]:
     """
-    Fetch markets with enriched data (orderbook, trades)
+    Fetch markets with optional enriched data (orderbook, trades)
     
     Args:
         api: KalshiAPI instance
-        limit: Number of markets to fetch
+        limit: Number of markets to fetch (1-500)
+        enrich_data: Whether to fetch orderbook and trade data (adds API calls and time)
         
     Returns:
-        List of enriched market dictionaries
+        List of market dictionaries (enriched if enrich_data=True)
+        
+    Note:
+        Enriching data makes additional API calls per market (orderbook + trades).
+        For 100 markets, this adds ~200 API calls and ~5 seconds of rate limiting delays.
+        Set enrich_data=False for faster fetching with basic market data only.
     """
-    markets = api.get_markets(limit=limit)
-    enriched = []
+    # Validate limit parameter
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("limit must be a positive integer")
+    if limit > 500:
+        print(f"Warning: limit of {limit} is very high. Consider using a smaller value (1-500).")
     
-    for market in markets:
+    markets = api.get_markets(limit=limit)
+    
+    if not enrich_data:
+        # Return basic market data without enrichment
+        return markets
+    
+    enriched = []
+    total_markets = len(markets)
+    
+    for idx, market in enumerate(markets):
         ticker = market.get('ticker')
         if not ticker:
             continue
@@ -183,7 +204,11 @@ def fetch_enriched_markets(api: KalshiAPI, limit: int = 100) -> List[Dict]:
         
         enriched.append(market)
         
-        # Rate limiting - be nice to the API
-        time.sleep(0.1)
+        # Rate limiting with progress indicator for long operations
+        # Kalshi API rate limits are not publicly documented, using conservative 0.05s delay
+        if idx < total_markets - 1:  # Don't sleep after last market
+            time.sleep(0.05)
+            if (idx + 1) % 20 == 0:
+                print(f"Progress: enriched {idx + 1}/{total_markets} markets...")
     
     return enriched

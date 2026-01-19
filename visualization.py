@@ -3,8 +3,13 @@ Visualization Module
 Creates sparklines and other visualizations for the MarketPress app
 """
 import pandas as pd
-import numpy as np
+
 from typing import List, Optional
+
+
+# Threshold for trend arrow determination (0.5% change)
+# Below this threshold, the market is considered flat (→)
+TREND_ARROW_THRESHOLD = 0.005
 
 
 def create_sparkline_text(prices: List[float], width: int = 10) -> str:
@@ -102,7 +107,7 @@ def get_trend_arrow(current: float, previous: Optional[float]) -> str:
     
     diff = current - previous
     
-    if abs(diff) < 0.005:  # Less than 0.5% change
+    if abs(diff) < TREND_ARROW_THRESHOLD:
         return "→"
     elif diff > 0:
         return "↑"

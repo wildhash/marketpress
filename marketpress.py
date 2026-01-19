@@ -3,17 +3,13 @@ MarketPress Main Application
 BBC/Yahoo-style newspaper front page for prediction markets
 """
 import pandas as pd
-from datetime import datetime, timedelta
-from typing import Optional, Dict
+from typing import Optional
 
 from kalshi_api import KalshiAPI, fetch_enriched_markets
 from data_normalization import normalize_markets, normalize_snapshots, normalize_liquidity_spread, merge_normalized_data
 from signals import compute_all_signals, rank_top_stories
 from layout import organize_into_sections, identify_developing_stories, create_section_layout
-from visualization import (
-    create_sparkline_text, get_trend_arrow, format_probability, 
-    format_delta, create_market_headline, create_sparkline_from_snapshots
-)
+from visualization import format_probability, format_delta, create_sparkline_from_snapshots
 from editor import MarketPressEditor
 
 try:

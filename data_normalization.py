@@ -4,8 +4,38 @@ Normalizes Kalshi market data into structured tables
 """
 import pandas as pd
 from typing import Dict, List
-from datetime import datetime
-import numpy as np
+
+
+def _extract_orderbook_side(orderbook_levels: List[Dict]) -> tuple:
+    """
+    Extract best bid/ask and volumes from orderbook levels
+    
+    Args:
+        orderbook_levels: List of orderbook level dictionaries
+        
+    Returns:
+        Tuple of (best_bid, best_ask, bid_volume, ask_volume)
+    """
+    best_bid = None
+    best_ask = None
+    bid_volume = 0
+    ask_volume = 0
+    
+    if orderbook_levels:
+        for level in orderbook_levels:
+            price = level.get('price', 0) / 100.0
+            quantity = level.get('quantity', 0)
+            
+            if level.get('type') == 'bid':
+                bid_volume += quantity
+                if best_bid is None or price > best_bid:
+                    best_bid = price
+            elif level.get('type') == 'ask':
+                ask_volume += quantity
+                if best_ask is None or price < best_ask:
+                    best_ask = price
+    
+    return best_bid, best_ask, bid_volume, ask_volume
 
 
 def normalize_markets(raw_markets: List[Dict]) -> pd.DataFrame:
@@ -105,47 +135,13 @@ def normalize_liquidity_spread(raw_markets: List[Dict]) -> pd.DataFrame:
             ticker = market.get('ticker')
             orderbook = market.get('orderbook', {})
             
-            # Extract yes side
+            # Extract yes side using helper function
             yes_bids = orderbook.get('yes', [])
-            yes_best_bid = None
-            yes_best_ask = None
-            yes_bid_volume = 0
-            yes_ask_volume = 0
+            yes_best_bid, yes_best_ask, yes_bid_volume, yes_ask_volume = _extract_orderbook_side(yes_bids)
             
-            if yes_bids:
-                for level in yes_bids:
-                    price = level.get('price', 0) / 100.0
-                    quantity = level.get('quantity', 0)
-                    
-                    if level.get('type') == 'bid':
-                        yes_bid_volume += quantity
-                        if yes_best_bid is None or price > yes_best_bid:
-                            yes_best_bid = price
-                    elif level.get('type') == 'ask':
-                        yes_ask_volume += quantity
-                        if yes_best_ask is None or price < yes_best_ask:
-                            yes_best_ask = price
-            
-            # Extract no side
+            # Extract no side using helper function
             no_bids = orderbook.get('no', [])
-            no_best_bid = None
-            no_best_ask = None
-            no_bid_volume = 0
-            no_ask_volume = 0
-            
-            if no_bids:
-                for level in no_bids:
-                    price = level.get('price', 0) / 100.0
-                    quantity = level.get('quantity', 0)
-                    
-                    if level.get('type') == 'bid':
-                        no_bid_volume += quantity
-                        if no_best_bid is None or price > no_best_bid:
-                            no_best_bid = price
-                    elif level.get('type') == 'ask':
-                        no_ask_volume += quantity
-                        if no_best_ask is None or price < no_best_ask:
-                            no_best_ask = price
+            no_best_bid, no_best_ask, no_bid_volume, no_ask_volume = _extract_orderbook_side(no_bids)
             
             # Calculate spread (using yes side as primary)
             spread = None
