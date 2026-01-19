@@ -15,7 +15,7 @@ import time
 
 # Configuration
 KALSHI_BASE_URL = "https://api.elections.kalshi.com/trade-api/v2"
-USE_DEMO_DATA = False  # Set to True for testing without API calls
+USE_DEMO_DATA = True  # Set to False for live Kalshi data
 MARKET_LIMIT = 100  # Number of markets to fetch
 RATE_LIMIT_DELAY = 0.5  # Seconds between API calls
 

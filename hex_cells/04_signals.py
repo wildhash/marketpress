@@ -33,9 +33,15 @@ def compute_volatility(markets_df: pd.DataFrame, snapshots_df: pd.DataFrame) -> 
     """
     df = markets_df.copy()
     
+    if df.empty:
+        return df
+    
     # For single snapshot, use a proxy based on current price
     # Markets near 50% are more volatile
-    df['volatility'] = df['yes_price'].apply(lambda p: 2 * p * (1 - p))
+    if 'yes_price' in df.columns:
+        df['volatility'] = df['yes_price'].apply(lambda p: 2 * p * (1 - p))
+    else:
+        df['volatility'] = 0.0
     
     # In production with historical data:
     # df['volatility'] = df.groupby('ticker')['yes_price'].transform(lambda x: x.std())
@@ -49,13 +55,16 @@ def compute_attention_score(markets_df: pd.DataFrame) -> pd.DataFrame:
     """
     df = markets_df.copy()
     
+    if df.empty:
+        return df
+    
     # Normalize volume and open interest to 0-1 range
-    if df['volume'].max() > 0:
+    if 'volume' in df.columns and df['volume'].max() > 0:
         vol_norm = df['volume'] / df['volume'].max()
     else:
         vol_norm = 0
     
-    if df['open_interest'].max() > 0:
+    if 'open_interest' in df.columns and df['open_interest'].max() > 0:
         oi_norm = df['open_interest'] / df['open_interest'].max()
     else:
         oi_norm = 0
@@ -78,6 +87,9 @@ def compute_newsworthiness(markets_df: pd.DataFrame, liquidity_df: pd.DataFrame)
     """
     df = markets_df.copy()
     
+    if df.empty:
+        return df
+    
     # Merge confidence score
     df = df.merge(liquidity_df[['ticker', 'confidence_score']], on='ticker', how='left')
     
@@ -95,16 +107,22 @@ def compute_newsworthiness(markets_df: pd.DataFrame, liquidity_df: pd.DataFrame)
         components['delta_24h'] = 0
     
     # Volatility
-    if df['volatility'].max() > 0:
+    if 'volatility' in df.columns and df['volatility'].max() > 0:
         components['volatility'] = df['volatility'] / df['volatility'].max()
     else:
         components['volatility'] = 0
     
     # Attention (already normalized)
-    components['attention'] = df['attention_score']
+    if 'attention_score' in df.columns:
+        components['attention'] = df['attention_score']
+    else:
+        components['attention'] = 0
     
     # Confidence
-    components['confidence'] = df['confidence_score'].fillna(0.5)
+    if 'confidence_score' in df.columns:
+        components['confidence'] = df['confidence_score'].fillna(0.5)
+    else:
+        components['confidence'] = 0.5
     
     # Weighted sum
     newsworthiness = (
@@ -122,25 +140,30 @@ def compute_newsworthiness(markets_df: pd.DataFrame, liquidity_df: pd.DataFrame)
 # Compute signals
 print("Computing signals...")
 
-# Add probability changes
-markets_df = compute_probability_changes(markets_df, snapshots_df)
-
-# Add volatility
-markets_df = compute_volatility(markets_df, snapshots_df)
-
-# Add attention score
-markets_df = compute_attention_score(markets_df)
-
-# Add newsworthiness
-markets_df = compute_newsworthiness(markets_df, liquidity_df)
-
-print(f"✓ Computed signals for {len(markets_df)} markets")
-print(f"  Average attention score: {markets_df['attention_score'].mean():.3f}")
-print(f"  Average volatility: {markets_df['volatility'].mean():.3f}")
-print(f"  Average newsworthiness: {markets_df['newsworthiness'].mean():.3f}")
-
-# Display sample with signals
-print("\nSample with signals:")
 if not markets_df.empty:
+    # Add probability changes
+    markets_df = compute_probability_changes(markets_df, snapshots_df)
+
+    # Add volatility
+    markets_df = compute_volatility(markets_df, snapshots_df)
+
+    # Add attention score
+    markets_df = compute_attention_score(markets_df)
+
+    # Add newsworthiness
+    markets_df = compute_newsworthiness(markets_df, liquidity_df)
+
+    print(f"✓ Computed signals for {len(markets_df)} markets")
+    print(f"  Average attention score: {markets_df['attention_score'].mean():.3f}")
+    print(f"  Average volatility: {markets_df['volatility'].mean():.3f}")
+    print(f"  Average newsworthiness: {markets_df['newsworthiness'].mean():.3f}")
+
+    # Display sample with signals
+    print("\nSample with signals:")
     cols = ['title', 'yes_price', 'attention_score', 'volatility', 'newsworthiness']
-    print(markets_df[cols].head(3))
+    available_cols = [c for c in cols if c in markets_df.columns]
+    if available_cols:
+        print(markets_df[available_cols].head(3))
+else:
+    print("⚠ No markets to compute signals for")
+
