@@ -1,0 +1,112 @@
+[
+  {
+    "ticker": "DEMO-001",
+    "title": "Will Trump win Pennsylvania in 2024 election?",
+    "category": "politics",
+    "yes_bid": 0.52,
+    "yes_ask": 0.54,
+    "volume": 45000,
+    "open_interest": 89000,
+    "close_time": "2024-11-05T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-002",
+    "title": "S&P 500 above 5000 by December 2024",
+    "category": "business",
+    "yes_bid": 0.67,
+    "yes_ask": 0.69,
+    "volume": 120000,
+    "open_interest": 230000,
+    "close_time": "2024-12-31T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-003",
+    "title": "Apple releases VR headset by June 2024",
+    "category": "tech",
+    "yes_bid": 0.81,
+    "yes_ask": 0.83,
+    "volume": 67000,
+    "open_interest": 145000,
+    "close_time": "2024-06-30T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-004",
+    "title": "Lakers make NBA playoffs in 2024",
+    "category": "sports",
+    "yes_bid": 0.44,
+    "yes_ask": 0.46,
+    "volume": 23000,
+    "open_interest": 51000,
+    "close_time": "2024-04-14T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-005",
+    "title": "Taylor Swift releases album by August 2024",
+    "category": "culture",
+    "yes_bid": 0.35,
+    "yes_ask": 0.37,
+    "volume": 15000,
+    "open_interest": 28000,
+    "close_time": "2024-08-31T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-006",
+    "title": "Fed raises interest rates in March 2024",
+    "category": "business",
+    "yes_bid": 0.28,
+    "yes_ask": 0.30,
+    "volume": 98000,
+    "open_interest": 187000,
+    "close_time": "2024-03-20T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-007",
+    "title": "Biden approval rating above 50% by June",
+    "category": "politics",
+    "yes_bid": 0.22,
+    "yes_ask": 0.24,
+    "volume": 34000,
+    "open_interest": 78000,
+    "close_time": "2024-06-30T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-008",
+    "title": "OpenAI GPT-5 launches by September 2024",
+    "category": "tech",
+    "yes_bid": 0.41,
+    "yes_ask": 0.43,
+    "volume": 145000,
+    "open_interest": 312000,
+    "close_time": "2024-09-30T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-009",
+    "title": "Inflation below 3% by July 2024",
+    "category": "business",
+    "yes_bid": 0.58,
+    "yes_ask": 0.60,
+    "volume": 76000,
+    "open_interest": 156000,
+    "close_time": "2024-07-31T23:59:59Z",
+    "status": "open"
+  },
+  {
+    "ticker": "DEMO-010",
+    "title": "Supreme Court major ruling by June 2024",
+    "category": "politics",
+    "yes_bid": 0.73,
+    "yes_ask": 0.75,
+    "volume": 52000,
+    "open_interest": 104000,
+    "close_time": "2024-06-30T23:59:59Z",
+    "status": "open"
+  }
+]
