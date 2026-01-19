@@ -1,7 +1,26 @@
 """
 MarketPress Hex Cell 8: Editor Desk (Hex Threads)
 Functions for Hex Threads "Editor Desk" prompts
+
+Note: This cell requires Cell 1 (setup) to be run first for imports
 """
+
+# Helper functions for formatting (needed in this cell)
+def format_percentage(value: float) -> str:
+    """Format a decimal as percentage"""
+    if pd.isna(value):
+        return "—"
+    return f"{value * 100:.0f}%"
+
+
+def format_change(value: float) -> str:
+    """Format a change value with sign and arrow"""
+    if pd.isna(value):
+        return "—"
+    
+    arrow = "↑" if value > 0 else "↓" if value < 0 else "→"
+    return f"{arrow} {abs(value) * 100:.1f}%"
+
 
 def summarize_front_page() -> str:
     """

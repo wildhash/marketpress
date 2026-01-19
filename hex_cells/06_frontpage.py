@@ -1,6 +1,8 @@
 """
 MarketPress Hex Cell 6: Front Page Layout
 Build front page tables for Hex App layout with newspaper feel
+
+Note: This cell requires Cell 1 (setup) to be run first for imports
 """
 
 def format_percentage(value: float) -> str:

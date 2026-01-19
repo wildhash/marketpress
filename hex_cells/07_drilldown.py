@@ -1,9 +1,11 @@
 """
 MarketPress Hex Cell 7: Drill-Down Details
 Timeline + fact box for selected market
+
+Note: This cell requires Cell 1 (setup) to be run first for imports
 """
 
-def create_fact_box(market_id: str) -> Dict:
+def create_fact_box(market_id: str) -> dict:
     """
     Create a fact box for a specific market
     
@@ -77,7 +79,7 @@ def get_market_timeline(market_id: str) -> pd.DataFrame:
     return timeline
 
 
-def create_sparkline_data(market_id: str, days: int = 7) -> List[float]:
+def create_sparkline_data(market_id: str, days: int = 7) -> list:
     """
     Create 7-day probability sparkline data
     
