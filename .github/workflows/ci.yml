@@ -1,0 +1,54 @@
+name: MarketPress CI
+
+on:
+  push:
+    branches: [ main, copilot/** ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run smoke tests
+      run: |
+        python tests/smoke_test.py
+    
+    - name: Test hex cells exist
+      run: |
+        test -f hex_cells/01_setup.py
+        test -f hex_cells/02_fetch_kalshi.py
+        test -f hex_cells/03_normalize.py
+        test -f hex_cells/04_signals.py
+        test -f hex_cells/05_sections.py
+        test -f hex_cells/06_frontpage.py
+        test -f hex_cells/07_drilldown.py
+        test -f hex_cells/08_editor.py
+    
+    - name: Test documentation exists
+      run: |
+        test -f README.md
+        test -f HEX_GUIDE.md
+        test -f semantic_model.yaml
+    
+    - name: Verify example script runs
+      run: |
+        python example.py > /dev/null

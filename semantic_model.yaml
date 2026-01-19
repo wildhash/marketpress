@@ -1,0 +1,240 @@
+# MarketPress Semantic Model
+# Defines the data schema for Hex Threads to understand market data
+
+semantic_model:
+  name: MarketPress Prediction Markets
+  description: Semantic model for prediction market news data
+  
+  tables:
+    - name: markets
+      description: Core market information with computed signals
+      
+      dimensions:
+        - name: market_id
+          type: string
+          description: Unique market identifier (ticker)
+          column: ticker
+        
+        - name: title
+          type: string
+          description: Market question or title
+          column: title
+        
+        - name: category
+          type: string
+          description: Market category (Politics, Business, Tech, Culture, Sports)
+          column: section
+        
+        - name: status
+          type: string
+          description: Market status (open, closed, settled)
+          column: status
+        
+        - name: expiration_date
+          type: datetime
+          description: Market close time
+          column: close_time
+      
+      measures:
+        - name: current_prob
+          type: number
+          description: Current implied probability (yes_price)
+          column: yes_price
+          format: percentage
+          aggregation: average
+        
+        - name: prob_change_24h
+          type: number
+          description: Probability change in last 24 hours
+          column: delta_24h
+          format: percentage
+          aggregation: average
+        
+        - name: prob_change_7d
+          type: number
+          description: Probability change in last 7 days
+          column: delta_7d
+          format: percentage
+          aggregation: average
+        
+        - name: volatility_7d
+          type: number
+          description: Price volatility over 7 days (standard deviation)
+          column: volatility
+          aggregation: average
+        
+        - name: attention_score
+          type: number
+          description: Composite score of volume and open interest
+          column: attention_score
+          aggregation: average
+        
+        - name: volume_24h
+          type: number
+          description: Trading volume in last 24 hours
+          column: volume
+          aggregation: sum
+        
+        - name: open_interest
+          type: number
+          description: Total open positions
+          column: open_interest
+          aggregation: sum
+        
+        - name: spread
+          type: number
+          description: Bid-ask spread
+          column: spread
+          format: percentage
+          aggregation: average
+        
+        - name: confidence_score
+          type: number
+          description: Market confidence (inverse of spread)
+          column: confidence_score
+          aggregation: average
+        
+        - name: newsworthiness
+          type: number
+          description: Composite newsworthiness score
+          column: newsworthiness
+          aggregation: average
+    
+    - name: snapshots
+      description: Time-series price and volume data
+      
+      dimensions:
+        - name: market_id
+          type: string
+          description: Market identifier
+          column: ticker
+        
+        - name: timestamp
+          type: datetime
+          description: Snapshot timestamp
+          column: timestamp
+      
+      measures:
+        - name: price
+          type: number
+          description: Yes price at snapshot time
+          column: yes_price
+          format: percentage
+        
+        - name: volume
+          type: number
+          description: Cumulative volume at snapshot time
+          column: volume
+    
+    - name: liquidity
+      description: Liquidity and spread metrics
+      
+      dimensions:
+        - name: market_id
+          type: string
+          description: Market identifier
+          column: ticker
+      
+      measures:
+        - name: spread
+          type: number
+          description: Current bid-ask spread
+          column: spread
+          format: percentage
+        
+        - name: depth
+          type: number
+          description: Orderbook depth proxy
+          column: depth
+        
+        - name: confidence
+          type: number
+          description: Market confidence score
+          column: confidence_score
+
+  relationships:
+    - from: snapshots.market_id
+      to: markets.market_id
+      type: many_to_one
+    
+    - from: liquidity.market_id
+      to: markets.market_id
+      type: one_to_one
+
+  metrics:
+    - name: total_markets
+      description: Total number of active markets
+      type: count_distinct
+      column: markets.market_id
+    
+    - name: avg_probability
+      description: Average implied probability across markets
+      type: average
+      column: markets.current_prob
+    
+    - name: total_volume
+      description: Total trading volume
+      type: sum
+      column: markets.volume_24h
+    
+    - name: avg_attention
+      description: Average attention score
+      type: average
+      column: markets.attention_score
+    
+    - name: high_confidence_markets
+      description: Markets with confidence > 0.7
+      type: count
+      filter: markets.confidence_score > 0.7
+    
+    - name: volatile_markets
+      description: Markets with high volatility
+      type: count
+      filter: markets.volatility_7d > 0.15
+
+  filters:
+    - name: category_filter
+      description: Filter markets by category
+      column: markets.category
+      type: select
+      options:
+        - Politics
+        - Business
+        - Tech
+        - Culture
+        - Sports
+    
+    - name: time_window
+      description: Filter by time window
+      column: markets.expiration_date
+      type: date_range
+    
+    - name: min_liquidity
+      description: Minimum volume filter
+      column: markets.volume_24h
+      type: number
+      default: 0
+    
+    - name: probability_range
+      description: Filter by probability range
+      column: markets.current_prob
+      type: number_range
+      min: 0
+      max: 1
+
+# Example Hex Threads Queries:
+#
+# 1. "Show me all tech markets above 70% probability"
+#    - Uses: category_filter=Tech, probability_range>0.7
+#
+# 2. "What's the average probability in politics?"
+#    - Uses: category_filter=Politics, avg_probability metric
+#
+# 3. "Which markets have the highest attention today?"
+#    - Uses: attention_score measure, sort descending
+#
+# 4. "Show me volatile markets with high volume"
+#    - Uses: volatility_7d > threshold, volume_24h > threshold
+#
+# 5. "What changed the most in the last 24 hours?"
+#    - Uses: prob_change_24h measure, sort by absolute value
