@@ -6,9 +6,22 @@ A Hex-native "prediction markets newspaper" that feels like BBC/Yahoo. MarketPre
 
 ## Visual Preview
 
-> 📸 **Screenshots Coming Soon**: Screenshots will be added after public Hex deployment showing the newspaper-style front page, drill-down views, and Editor Desk in action.
+### Front Page
+> 📸 **Screenshot Placeholder**: See [assets/frontpage_placeholder.md](assets/frontpage_placeholder.md) for what will be captured
+> 
+> Shows: Lead Story, Top Stories, Category Sections (Politics/Business/Tech/Culture/Sports), Developing, and Most Read
+
+### Drill-Down View  
+> 📸 **Screenshot Placeholder**: See [assets/drilldown_placeholder.md](assets/drilldown_placeholder.md) for what will be captured
 >
-> For now, see the live demo at the public Hex link below.
+> Shows: Detailed fact box with market statistics, 7-day timeline, and all computed signals
+
+### Editor Desk (Threads)
+> 📸 **Screenshot Placeholder**: See [assets/editor_desk_placeholder.md](assets/editor_desk_placeholder.md) for what will be captured
+>
+> Shows: AI-powered Q&A using Hex Threads with semantic model integration
+
+**For now, see the live demo at the public Hex link below.**
 
 ---
 
@@ -62,6 +75,45 @@ MarketPress presents **what the crowd believes**, not what pundits think. Every 
 - Trackable changes over time
 
 No commentary. No hot takes. Just the wisdom (or madness) of crowds.
+
+---
+
+## Methodology: How Markets Become News
+
+MarketPress transforms raw prediction market data into a scannable newspaper through computed signals:
+
+### Newsworthiness Score
+A composite metric that ranks markets by editorial importance:
+- **Delta 24h** (30%): Recent probability changes signal breaking developments
+- **Volatility** (25%): Standard deviation of prices indicates uncertainty and debate
+- **Attention** (25%): Combined volume and open interest shows crowd engagement
+- **Confidence** (20%): Inverse of spread reflects market conviction
+
+Markets with the highest newsworthiness become "Lead Story" and "Top Stories."
+
+### Confidence Score
+How certain the market is about the outcome:
+- **Tight spread (< 2%)**: High confidence—market makers agree on the price
+- **Normal spread (2-5%)**: Moderate confidence—typical market conditions  
+- **Wide spread (> 5%)**: Low confidence—disagreement or low liquidity
+
+Confidence helps distinguish "serious desk" high-conviction markets from speculative noise.
+
+### Attention Score
+A proxy for "most read" (engagement and trading activity):
+- **Volume**: Total contracts traded (direct activity measure)
+- **Open Interest**: Outstanding positions (sustained interest)
+- **Composite**: Weighted combination reflecting total market engagement
+
+High attention markets are the "most watched" stories.
+
+### Volatility
+Price instability over rolling windows:
+- **7-day standard deviation**: How much the probability bounces around
+- **Developing stories**: Markets with both high volatility AND accelerating attention
+- **Stable markets**: Low volatility signals consensus
+
+Volatile markets with rising attention surface as "Developing" stories.
 
 ---
 
@@ -383,7 +435,10 @@ Quick summary:
 6. **Publish**: Share with team or make public
 
 ### Legacy Method (Not Recommended)
-The `hex_app.py` file provides a legacy template approach. Use the `hex_cells/` method above for judging and production use.
+
+**⚠️ Do not use for judging or production.** The `hex_app.py` file is a legacy single-file template from earlier development. It is kept for historical reference only.
+
+**Use the `hex_cells/` method above instead** (Option A or B in HEX_GUIDE.md).
 
 ### Recommended Hex Layout
 ```

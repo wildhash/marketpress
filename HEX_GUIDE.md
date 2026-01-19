@@ -1,15 +1,34 @@
 # MarketPress Hex Deployment Guide
 
-## Judge Mode (5 minutes)
+## ⭐ Judge Mode (5 minutes) — RECOMMENDED PATH
 
-### Option A: Public Hex Project (Recommended) ⭐
-Open the public Hex project and click "Run All" to see the live front page.
-- **Public Project**: [MarketPress - Prediction Markets Newspaper](https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest)
-- Simply click **"Run All"** and explore the interactive newspaper layout
-- Try the AI Editor Desk prompts in Threads
+### Option A: Open Public Hex Project (Fastest) ⭐
+
+**This is the recommended path for judges and evaluators.**
+
+1. **Open the public Hex project**: [MarketPress - Prediction Markets Newspaper](https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest)
+2. **Click "Run All"** in the top toolbar
+3. **Wait 15-30 seconds** for data to load (uses demo fallback if API unavailable)
+4. **Explore the interactive newspaper layout**:
+   - Lead Story (top market by newsworthiness)
+   - Top Stories (5 highest-ranked markets)
+   - Category sections (Politics, Business, Tech, Culture, Sports)
+   - Developing (high volatility + accelerating attention)
+   - Most Read (highest engagement)
+5. **Try the AI Editor Desk** in Threads:
+   - Click the Threads icon in Hex
+   - Paste: "Write today's front page in 8 headlines"
+   - Paste: "What's the biggest belief shift since yesterday?"
+
+**Total time: 5 minutes including exploration**
+
+---
 
 ### Option B: Build from Source (5-10 minutes)
-Follow the step-by-step instructions below to create your own Hex project.
+
+**Only use this if you want to modify the code or deploy your own version.**
+
+Follow the step-by-step instructions below to create your own Hex project from the `hex_cells/` folder.
 
 ---
 
@@ -224,6 +243,16 @@ All Hex cell files are in the `hex_cells/` folder:
 - `06_frontpage.py` - Front page layout
 - `07_drilldown.py` - Drill-down details
 - `08_editor.py` - Editor Desk functions
+
+---
+
+## Legacy Files (Do Not Use for Judging)
+
+The repository includes `hex_app.py` as a legacy single-file template from earlier development. **Do not use this file.** It is kept for historical reference only.
+
+**For judges and evaluators**: Use **Option A** (public Hex project link) or **Option B** (`hex_cells/` folder approach) described at the top of this guide.
+
+---
 
 ## Support
 
