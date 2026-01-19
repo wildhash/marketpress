@@ -52,10 +52,14 @@ if not top_stories_df.empty:
     display_df.columns = ['Market', 'Probability', '24h Change', 'Volume', 'Attention']
     
     # Add sparklines
-    display_df['Trend'] = display_df.index.map(
-        lambda idx: app.get_market_sparkline(top_stories_df.iloc[idx]['ticker']) 
-        if 'ticker' in top_stories_df.columns else '─────'
-    )
+    if 'ticker' in top_stories_df.columns:
+        ticker_series = top_stories_df['ticker']
+        display_df['Trend'] = display_df.index.map(
+            lambda idx: app.get_market_sparkline(ticker_series.loc[idx])
+            if idx in ticker_series.index else '─────'
+        )
+    else:
+        display_df['Trend'] = '─────'
     
     display_df
 else:
