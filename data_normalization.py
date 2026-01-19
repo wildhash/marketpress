@@ -3,7 +3,7 @@ Data Normalization Module
 Normalizes Kalshi market data into structured tables
 """
 import pandas as pd
-from typing import Dict, List, Optional
+from typing import Dict, List
 from datetime import datetime
 import numpy as np
 
