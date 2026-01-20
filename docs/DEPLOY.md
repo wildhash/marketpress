@@ -32,17 +32,22 @@ To update the landing page:
 
 ## Placeholder Links
 
-In `docs/index.html`, there are two placeholder links that need to be replaced:
+In `docs/index.html`, the demo video button is currently disabled:
 
 ### Demo Video Link
 ```html
-<a href="REPLACE_WITH_DEMO_VIDEO_LINK" class="btn btn-secondary">Watch Demo Video</a>
+<a href="#" class="btn btn-secondary btn-disabled" title="Demo video coming soon">Watch Demo Video (Coming Soon)</a>
 ```
 
-Replace `REPLACE_WITH_DEMO_VIDEO_LINK` with your actual demo video URL (YouTube, Loom, etc.)
+To enable the demo video button, replace this line with:
+```html
+<a href="YOUR_DEMO_VIDEO_URL" class="btn btn-secondary">Watch Demo Video</a>
+```
+
+Replace `YOUR_DEMO_VIDEO_URL` with your actual demo video URL (YouTube, Loom, etc.) and remove the `btn-disabled` class.
 
 ### Public Hex Project Link
-The public Hex project link is already included, but verify it's correct:
+The public Hex project link is already configured and working:
 ```html
 <a href="https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest" class="btn btn-primary">Open Public Hex Project</a>
 ```
