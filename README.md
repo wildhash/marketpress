@@ -2,6 +2,12 @@
 
 A Hex-native "prediction markets newspaper" that feels like BBC/Yahoo. MarketPress transforms live Kalshi market data into a scannable front page with raw-fact headlines, interactive filters, and an AI "Editor Desk" powered by Hex Threads.
 
+## 🌐 Live Site
+
+**[Visit the MarketPress Landing Page](https://wildhash.github.io/marketpress/)**
+
+This is the judge-friendly landing page. The Hex project link is inside.
+
 ---
 
 ## Visual Preview

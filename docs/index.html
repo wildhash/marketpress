@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPress - Prediction Markets as a Front Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <h1>MarketPress 📰</h1>
+            <p class="tagline">Prediction markets as a front page of collective belief.</p>
+            <div class="hero-buttons">
+                <a href="https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest" class="btn btn-primary">Open Public Hex Project</a>
+                <a href="REPLACE_WITH_DEMO_VIDEO_LINK" class="btn btn-secondary">Watch Demo Video</a>
+                <a href="https://github.com/wildhash/marketpress" class="btn btn-tertiary">View GitHub Repo</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="assets/marketpress-hero.png" alt="MarketPress Front Page" />
+        </div>
+    </header>
+
+    <main>
+        <section class="what-it-does">
+            <h2>What It Does</h2>
+            <div class="content-grid">
+                <div class="feature-text">
+                    <ul>
+                        <li><strong>BBC-style news layout</strong> - Lead story, top stories, category sections (Politics, Business, Tech, Culture, Sports)</li>
+                        <li><strong>Live prediction market data</strong> - Real-time probabilities from Kalshi with money on the line</li>
+                        <li><strong>Smart signal computation</strong> - Δ24h/Δ7d changes, volatility, attention, confidence, newsworthiness scores</li>
+                        <li><strong>Developing stories</strong> - High-volatility markets with accelerating attention</li>
+                        <li><strong>Most Read section</strong> - Highest-attention markets (volume/open interest proxy)</li>
+                        <li><strong>AI Editor Desk</strong> - Hex Threads integration for natural language queries</li>
+                        <li><strong>Interactive drill-down</strong> - Click any headline for timeline + fact box</li>
+                        <li><strong>Raw facts, no spin</strong> - What the crowd believes, not what pundits think</li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="assets/marketpress-feature.png" alt="MarketPress Features" />
+                </div>
+            </div>
+        </section>
+
+        <section class="judge-mode">
+            <h2>How to Judge (5 Minutes)</h2>
+            <div class="judge-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Open the Public Hex Project</h3>
+                        <p>Click "Open Public Hex Project" above or visit: <a href="https://app.hex.tech/wildhash/app/marketpress-prediction-markets-newspaper/latest" target="_blank">MarketPress on Hex</a></p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Click "Run All"</h3>
+                        <p>Execute all cells to load live prediction market data from Kalshi</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Explore the Front Page</h3>
+                        <p>Browse Lead Story, Top Stories, category sections (Politics/Business/Tech/Culture/Sports), Developing, and Most Read</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Try the AI Editor Desk</h3>
+                        <p>Open Hex Threads and ask questions like:</p>
+                        <ul>
+                            <li>"Write today's front page in 8 headlines"</li>
+                            <li>"What's the biggest belief shift since yesterday?"</li>
+                            <li>"Show me the fun desk: weird movers with real liquidity"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="key-signals">
+            <h2>Key Signals</h2>
+            <div class="signals-grid">
+                <div class="signal-card">
+                    <h3>📊 Probability</h3>
+                    <p>Implied probability of the event (Yes price × 100)</p>
+                </div>
+                <div class="signal-card">
+                    <h3>📈 Deltas</h3>
+                    <p>Δ24h and Δ7d - Recent probability changes signal breaking developments</p>
+                </div>
+                <div class="signal-card">
+                    <h3>📉 Volatility</h3>
+                    <p>Standard deviation of prices indicates uncertainty and debate</p>
+                </div>
+                <div class="signal-card">
+                    <h3>👀 Attention</h3>
+                    <p>Volume + open interest = crowd engagement (proxy for "most read")</p>
+                </div>
+                <div class="signal-card">
+                    <h3>💪 Confidence</h3>
+                    <p>Inverse of spread - tight spread = high conviction, wide = uncertainty</p>
+                </div>
+                <div class="signal-card">
+                    <h3>📰 Newsworthiness</h3>
+                    <p>Composite score: Δ24h (30%) + volatility (25%) + attention (25%) + confidence (20%)</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="philosophy">
+            <h2>Philosophy: Raw Facts, No Spin</h2>
+            <p>MarketPress presents <strong>what the crowd believes</strong>, not what pundits think. Every headline is a prediction market with:</p>
+            <ul>
+                <li>Real money on the line</li>
+                <li>Transparent probability</li>
+                <li>Trackable changes over time</li>
+            </ul>
+            <p>No commentary. No hot takes. Just the wisdom (or madness) of crowds.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built in Hex • Raw facts, no spin</p>
+        <p><a href="https://github.com/wildhash/marketpress">View on GitHub</a></p>
+    </footer>
+</body>
+</html>
